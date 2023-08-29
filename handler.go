@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"cloud.google.com/go/logging"
 	"go.innotegrity.dev/async"
@@ -108,7 +107,6 @@ func NewGoogleCloudLoggingHandler(opts GoogleCloudLoggingHandlerOptions) (*googl
 	}
 
 	// create the handler
-	fmt.Println("creating client...")
 	client, err := logging.NewClient(context.Background(), opts.ProjectID, opts.ClientOptions...)
 	if err != nil {
 		return nil, err
