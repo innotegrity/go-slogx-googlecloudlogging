@@ -14,8 +14,8 @@ import (
 	"google.golang.org/api/option"
 )
 
-// GoogleCloudLoggingHandlerOptionsContext can be used to retrieve the options used by the handler from the context.
-type GoogleCloudLoggingHandlerOptionsContext struct{}
+// googleCloudLoggingHandlerOptionsContext can be used to retrieve the options used by the handler from the context.
+type googleCloudLoggingHandlerOptionsContext struct{}
 
 // GoogleCloudLoggingHandlerOptions holds the options for the JSON handler.
 type GoogleCloudLoggingHandlerOptions struct {
@@ -55,8 +55,37 @@ type GoogleCloudLoggingHandlerOptions struct {
 	//
 	// You should always be sure to format the buffer into a proper JSON payload.
 	//
-	// If no formatter is supplied, formatters.DefaultJSONFormatter is used to format the output.
+	// If no formatter is supplied, formatter.DefaultJSONFormatter is used to format the output.
 	RecordFormatter formatter.BufferFormatter
+}
+
+// DefaultGoogleCloudLoggingHandlerOptions returns a default set of options for the handler.
+func DefaultGoogleCloudLoggingHandlerOptions() GoogleCloudLoggingHandlerOptions {
+	return GoogleCloudLoggingHandlerOptions{
+		ClientOptions:   []option.ClientOption{},
+		Level:           slog.LevelInfo,
+		LoggerOptions:   []logging.LoggerOption{},
+		RecordFormatter: formatter.DefaultJSONFormatter(),
+	}
+}
+
+// GetGoogleCloudLoggingHandlerOptionsFromContext retrieves the options from the context.
+//
+// If the options are not set in the context, a set of default options is returned instead.
+func GetGoogleCloudLoggingHandlerOptionsFromContext(ctx context.Context) *GoogleCloudLoggingHandlerOptions {
+	o := ctx.Value(googleCloudLoggingHandlerOptionsContext{})
+	if o != nil {
+		if opts, ok := o.(*GoogleCloudLoggingHandlerOptions); ok {
+			return opts
+		}
+	}
+	opts := DefaultGoogleCloudLoggingHandlerOptions()
+	return &opts
+}
+
+// AddToContext adds the options to the given context and returns the new context.
+func (o *GoogleCloudLoggingHandlerOptions) AddToContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, googleCloudLoggingHandlerOptionsContext{}, o)
 }
 
 // DefaultGoogleCloudLoggingHandlerLevelMapper is a default function for mapping slog levels to GCP logging levels.
@@ -131,7 +160,7 @@ func (h googleCloudLoggingHandler) Enabled(ctx context.Context, level slog.Level
 // Any attributes duplicated between the handler and record, including within groups, are automaticlaly removed.
 // If a duplicate is encountered, the last value found will be used for the attribute's value.
 func (h *googleCloudLoggingHandler) Handle(ctx context.Context, r slog.Record) error {
-	handlerCtx := context.WithValue(ctx, GoogleCloudLoggingHandlerOptionsContext{}, &h.options)
+	handlerCtx := h.options.AddToContext(ctx)
 	if !h.options.EnableAsync {
 		return h.handle(handlerCtx, r)
 	}
