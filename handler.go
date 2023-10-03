@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log/slog"
 
 	"cloud.google.com/go/logging"
 	"go.innotegrity.dev/async"
 	"go.innotegrity.dev/generic"
 	"go.innotegrity.dev/slogx"
 	"go.innotegrity.dev/slogx/formatter"
-	"golang.org/x/exp/slog"
 	"google.golang.org/api/option"
 )
 

@@ -1,14 +1,15 @@
 module go.innotegrity.dev/slogx-googlecloudlogging
 
-go 1.18
+go 1.21
+
+toolchain go1.21.1
 
 require (
 	cloud.google.com/go/logging v1.8.1
 	go.innotegrity.dev/async v0.1.1
 	go.innotegrity.dev/errorx v1.0.15
 	go.innotegrity.dev/generic v0.1.1
-	go.innotegrity.dev/slogx v0.1.0
-	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
+	go.innotegrity.dev/slogx v0.3.1
 	google.golang.org/api v0.138.0
 )
 

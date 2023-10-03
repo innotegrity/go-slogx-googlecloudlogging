@@ -5,6 +5,7 @@ package slogxgooglecloudlogging_test
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"testing"
 	"time"
@@ -12,7 +13,6 @@ import (
 	"go.innotegrity.dev/errorx"
 	"go.innotegrity.dev/slogx"
 	slogxgooglecloudlogging "go.innotegrity.dev/slogx-googlecloudlogging"
-	"golang.org/x/exp/slog"
 )
 
 func TestGoogleCloudLogging1(t *testing.T) {
